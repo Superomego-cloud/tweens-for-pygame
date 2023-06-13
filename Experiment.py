@@ -10,7 +10,7 @@ class proto:
         self.currentTween = None
         
 class tween:
-    def __init__(self, easingStyle:typing.Callable, d:int, t:int, obj:proto, dirList:list, reverse:bool=False):
+    def __init__(self, easingStyle:typing.Callable, d:int, t:int, obj:pygame.Rect, dirList:list, reverse:bool=False):
         
         self.obj = obj
         if not self.obj.currentTween:
@@ -23,7 +23,7 @@ class tween:
         self.speedX, self.speedY = [(d/t)*dirList[0], (d/t)*dirList[1]]
         self.easingFunction = easingStyle
         self.frame = 0
-        self.defaultPos = obj.hitbox
+        self.defaultPos = obj
         self.temp = [0,0]
         self.reverse = reverse
     
@@ -38,11 +38,11 @@ class tween:
             tweenlist.remove(self)
             del self
         
-        self.obj.hitbox = self.defaultPos.copy()
+        self.obj = self.defaultPos.copy()
         self.temp[0] = self.speedX*self.easingFunction(self.frame/FPS, self.tempData[1])
         self.temp[1] = self.speedY*self.easingFunction(self.frame/FPS, self.tempData[1])
         self.frame += 1
-        self.obj.hitbox.move_ip(ErrorCheck(self.temp[0]), ErrorCheck(self.temp[1]))
+        self.obj.move_ip(ErrorCheck(self.temp[0]), ErrorCheck(self.temp[1]))
 
 
 def ErrorCheck(x):
@@ -68,7 +68,7 @@ running = True
 rect1 = proto(location=[0,0], size=[100,100])
 rect2 = proto(location=[0,0], size=[100,100])
 rect3 = proto(location=[0,0], size=[100,100])
-tweenlist = [tween(Quadratic, 400, 5, rect1, [1,0]), tween(Expo, 400, 5, rect2, [1,0]), tween(Linear, 400, 5, rect3, [1,0], True)]
+tweenlist = [tween(Quadratic, 400, 5, rect1.hitbox, [1,0]), tween(Expo, 400, 5, rect2.hitbox, [1,0]), tween(Linear, 400, 5, rect3.hitbox, [1,0], True)]
 clock = pygame.time.Clock()      
 i = 0
 
